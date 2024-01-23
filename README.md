@@ -1,4 +1,4 @@
-# Coda Adventure Social App
+# Codadventure Social App
 
 Coda Adventure Social is a social networking app that allows users to connect, share experiences, and explore new adventures.
 
