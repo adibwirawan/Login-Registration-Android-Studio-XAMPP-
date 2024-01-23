@@ -1,0 +1,54 @@
+<?php
+session_start();
+require_once('dbconnection.php'); // Include the database connection script.
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+
+    // Check if the user exists in the database.
+    $query = "SELECT id FROM users WHERE username = ? LIMIT 1";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        $user = $result->fetch_assoc();
+
+        // Generate a unique reset token and set an expiration time.
+        $reset_token = bin2hex(random_bytes(32));
+        $reset_token_expiration = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+        // Update the user's record in the database with the reset token and expiration time.
+        $query = "UPDATE users SET reset_token = ?, reset_token_expiration = ? WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ssi', $reset_token, $reset_token_expiration, $user['id']);
+        $stmt->execute();
+
+        // Send an email to the user with a link to reset their password (not shown here).
+
+        // Redirect the user to a confirmation page.
+        header('Location: reset_password_confirmation.php');
+        exit();
+    } else {
+        // User not found, show an error message.
+        $error = "User not found.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Reset Request</title>
+</head>
+<body>
+    <h2>Password Reset Request</h2>
+    <?php if (isset($error)) { echo "<p>$error</p>"; } ?>
+    <form method="post">
+        <label for="username">Username or Email:</label>
+        <input type="text" name="username" required>
+        <button type="submit">Request Password Reset</button>
+    </form>
+</body>
+</html>
