@@ -25,7 +25,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/adibwirawan/Login-Registration-Android-Studio-XAMPP-.git
+   git clone https://github.com/adibwirawan/Login-Registration-Android-Studio-XAMPP-PHP.git
 
 Usage
 Login: Enter your email/username and password to log in.
